@@ -9,27 +9,26 @@ NO_ENCOUNTER_SOUND = "gallop.mp3"
 CHEER_SOUND = "cheer.wav"
 BOO_SOUND = "boo.mp3"
 
-# Explicit full file-to-name mapping
+# Friendly labels
 PAWN_LABELS = {
-    "BloxLeft.png": "Player Two, The Brothers Blox",
-    "BloxRight.png": "Player One, The Brothers Blox",
-    "FazLeft.png": "Player Two, Lord Fazworth",
-    "FazRight.png": "Player One, Lord Fazworth",
-    "MessiLeft.png": "Player Two, King Messi the GOAT",
-    "MessiRight.png": "Player One, King Messi the GOAT",
-    "MiniLeft.png": "Player Two, Lady Mini",
-    "MiniRight.png": "Player One, Lady Mini",
-    "PsyLeft.png": "Player Two, Sir Psyduck",
-    "PsyRight.png": "Player One, Sir Psyduck",
-    "ZombieLeft.png": "Player Two, Phone Zombies",
-    "ZombieRight.png": "Player One, Phone Zombies"
+    "BloxLeft.png": "The Brothers Blox",
+    "BloxRight.png": "The Brothers Blox",
+    "FazLeft.png": "Lord Fazworth",
+    "FazRight.png": "Lord Fazworth",
+    "MessiLeft.png": "King Messi the GOAT",
+    "MessiRight.png": "King Messi the GOAT",
+    "MiniLeft.png": "Lady Mini",
+    "MiniRight.png": "Lady Mini",
+    "PsyLeft.png": "Sir Psyduck",
+    "PsyRight.png": "Sir Psyduck",
+    "ZombieLeft.png": "Phone Zombies",
+    "ZombieRight.png": "Phone Zombies"
 }
 
 st.title("⚔️ Joust Game Prototype")
 
-# List valid pawns in directory
+# List pawn files
 available_files = os.listdir(".")
-
 player1_options = [f for f in available_files if f.endswith("Right.png") and f in PAWN_LABELS]
 player2_options = [f for f in available_files if f.endswith("Left.png") and f in PAWN_LABELS]
 
@@ -40,14 +39,15 @@ if not player1_options or not player2_options:
 player1_display = st.sidebar.selectbox("Choose Player 1 Pawn (top path)", [PAWN_LABELS[f] for f in player1_options])
 player2_display = st.sidebar.selectbox("Choose Player 2 Pawn (bottom path)", [PAWN_LABELS[f] for f in player2_options])
 
-# Reverse mapping from display to file
+# Resolve selected file names
 rev_labels = {v: k for k, v in PAWN_LABELS.items()}
-player1_pawn_file = rev_labels[player1_display]
-player2_pawn_file = rev_labels[player2_display]
+player1_pawn_file = [k for k, v in PAWN_LABELS.items() if v == player1_display and k.endswith("Right.png")][0]
+player2_pawn_file = [k for k, v in PAWN_LABELS.items() if v == player2_display and k.endswith("Left.png")][0]
 
+# Load and resize images
 background = Image.open(BACKGROUND_PATH).convert("RGBA")
-player1_pawn = Image.open(player1_pawn_file).convert("RGBA")
-player2_pawn = Image.open(player2_pawn_file).convert("RGBA")
+player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((64, 64))
+player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((64, 64))
 
 bottom_positions = [(20, 100), (100, 180), (180, 260), (260, 340), (340, 420), (420, 500)]
 top_positions = [(420, 20), (340, 100), (260, 180), (180, 260), (100, 340), (20, 420)]
@@ -92,7 +92,7 @@ elif st.session_state.step == 2:
         frame = background.copy()
         frame.paste(player1_pawn, top_positions[min(st.session_state.p1_pos, 5)], player1_pawn)
         frame.paste(player2_pawn, bottom_positions[min(st.session_state.p2_pos, 5)], player2_pawn)
-        st.image(frame, caption=f"Round {round + 1}", use_column_width=True)
+        st.image(frame, caption=f"Round {round + 1}", use_container_width=True)
 
         st.session_state.results.append((p1_move, p2_move, st.session_state.p1_pos, st.session_state.p2_pos))
 
@@ -112,7 +112,7 @@ elif st.session_state.step == 3:
     final = background.copy()
     final.paste(player1_pawn, top_positions[min(st.session_state.p1_pos, 5)], player1_pawn)
     final.paste(player2_pawn, bottom_positions[min(st.session_state.p2_pos, 5)], player2_pawn)
-    st.image(final, caption="Final Positions", use_column_width=True)
+    st.image(final, caption="Final Positions", use_container_width=True)
 
     last_round = st.session_state.results[-1]
     p1_move, p2_move = last_round[0], last_round[1]
