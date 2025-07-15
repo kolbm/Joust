@@ -3,16 +3,19 @@ from PIL import Image
 import os
 from io import StringIO
 
-ASSET_DIR = "assets"
-PAWN_DIR = os.path.join(ASSET_DIR, "pawns")
-BACKGROUND_PATH = os.path.join(ASSET_DIR, "background6.png")
-
+BACKGROUND_PATH = "background6.png"
 START_SOUND = "begin.wav"
 NO_ENCOUNTER_SOUND = "gallop.mp3"
 CHEER_SOUND = "cheer.wav"
 BOO_SOUND = "boo.mp3"
 
 st.title("⚔️ Joust Game Prototype")
+
+# List pawn image options from root
+pawn_options = sorted(set(f[:-9] for f in os.listdir(".") if f.endswith("Left.png")))
+if not pawn_options:
+    st.error("No pawn images found in the root directory. Expected files like 'RedLeft.png'.")
+    st.stop()
 
 if "step" not in st.session_state:
     st.session_state.step = 0
@@ -24,7 +27,6 @@ if "step" not in st.session_state:
     st.session_state.p2_pos = 0
     st.session_state.round = 0
 
-pawn_options = sorted(set(f[:-9] for f in os.listdir(PAWN_DIR) if f.endswith("Left.png")))
 player1_name = st.sidebar.selectbox("Choose Player 1 Pawn (bottom path)", pawn_options, index=0)
 player2_name = st.sidebar.selectbox("Choose Player 2 Pawn (top path)", pawn_options, index=1)
 
@@ -32,8 +34,8 @@ player1_pawn_file = f"{player1_name}Left.png"
 player2_pawn_file = f"{player2_name}Right.png"
 
 background = Image.open(BACKGROUND_PATH).convert("RGBA")
-player1_pawn = Image.open(os.path.join(PAWN_DIR, player1_pawn_file)).convert("RGBA")
-player2_pawn = Image.open(os.path.join(PAWN_DIR, player2_pawn_file)).convert("RGBA")
+player1_pawn = Image.open(player1_pawn_file).convert("RGBA")
+player2_pawn = Image.open(player2_pawn_file).convert("RGBA")
 
 bottom_positions = [(20, 100), (100, 180), (180, 260), (260, 340), (340, 420), (420, 500)]
 top_positions = [(420, 20), (340, 100), (260, 180), (180, 260), (100, 340), (20, 420)]
