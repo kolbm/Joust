@@ -48,9 +48,12 @@ background = Image.open(BACKGROUND_PATH).convert("RGBA")
 player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((80, 80))
 player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((80, 80))
 
-# Updated positions from annotated map
-bottom_positions = [(645, 530), (530, 445), (430, 365), (325, 282), (220, 200), (115, 120)]
-top_positions = [(115, 45), (220, 120), (325, 200), (430, 282), (530, 365), (645, 445)]
+# Corrected directions:
+# Player 1 (top path) goes RIGHTWARD
+# Player 2 (bottom path) goes LEFTWARD
+
+top_positions = [(150, 50), (245, 125), (340, 200), (435, 275), (530, 350), (625, 425)]
+bottom_positions = [(625, 50), (530, 125), (435, 200), (340, 275), (245, 350), (150, 425)]
 
 if "step" not in st.session_state:
     st.session_state.step = 0
