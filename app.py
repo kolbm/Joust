@@ -43,13 +43,14 @@ player2_display = st.sidebar.selectbox("Choose Player 2 Pawn (bottom path)", [PA
 player1_pawn_file = [k for k in player1_options if PAWN_LABELS[k] == player1_display][0]
 player2_pawn_file = [k for k in player2_options if PAWN_LABELS[k] == player2_display][0]
 
-# Load and resize images
+# Load and resize images with transparency
 background = Image.open(BACKGROUND_PATH).convert("RGBA")
-player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((48, 48))
-player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((48, 48))
+player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((64, 64))
+player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((64, 64))
 
-bottom_positions = [(30, 415), (120, 335), (200, 255), (280, 175), (360, 95), (440, 15)]
-top_positions = [(440, 415), (360, 335), (280, 255), (200, 175), (120, 95), (30, 15)]
+# Hex positions adjusted to better center pawns on hexes
+bottom_positions = [(10, 355), (100, 277), (180, 195), (265, 115), (350, 35), (435, -45)]
+top_positions = [(435, 355), (350, 277), (265, 195), (180, 115), (100, 35), (10, -45)]
 
 if "step" not in st.session_state:
     st.session_state.step = 0
