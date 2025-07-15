@@ -40,17 +40,16 @@ player1_display = st.sidebar.selectbox("Choose Player 1 Pawn (top path)", [PAWN_
 player2_display = st.sidebar.selectbox("Choose Player 2 Pawn (bottom path)", [PAWN_LABELS[f] for f in player2_options])
 
 # Resolve selected file names
-rev_labels = {v: k for k, v in PAWN_LABELS.items()}
-player1_pawn_file = [k for k, v in PAWN_LABELS.items() if v == player1_display and k.endswith("Right.png")][0]
-player2_pawn_file = [k for k, v in PAWN_LABELS.items() if v == player2_display and k.endswith("Left.png")][0]
+player1_pawn_file = [k for k in player1_options if PAWN_LABELS[k] == player1_display][0]
+player2_pawn_file = [k for k in player2_options if PAWN_LABELS[k] == player2_display][0]
 
 # Load and resize images
 background = Image.open(BACKGROUND_PATH).convert("RGBA")
-player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((64, 64))
-player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((64, 64))
+player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((48, 48))
+player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((48, 48))
 
-bottom_positions = [(20, 100), (100, 180), (180, 260), (260, 340), (340, 420), (420, 500)]
-top_positions = [(420, 20), (340, 100), (260, 180), (180, 260), (100, 340), (20, 420)]
+bottom_positions = [(30, 415), (120, 335), (200, 255), (280, 175), (360, 95), (440, 15)]
+top_positions = [(440, 415), (360, 335), (280, 255), (200, 175), (120, 95), (30, 15)]
 
 if "step" not in st.session_state:
     st.session_state.step = 0
@@ -84,28 +83,31 @@ elif st.session_state.step == 1:
 elif st.session_state.step == 2:
     round = st.session_state.round
     if round < 3:
-        p1_move = st.session_state.p1_numbers[round]
-        p2_move = st.session_state.p2_numbers[round]
-        st.session_state.p1_pos += p1_move
-        st.session_state.p2_pos += p2_move
-
         frame = background.copy()
-        frame.paste(player1_pawn, top_positions[min(st.session_state.p1_pos, 5)], player1_pawn)
-        frame.paste(player2_pawn, bottom_positions[min(st.session_state.p2_pos, 5)], player2_pawn)
+        pos1 = st.session_state.p1_pos
+        pos2 = st.session_state.p2_pos
+
+        frame.paste(player1_pawn, top_positions[min(pos1, 5)], player1_pawn)
+        frame.paste(player2_pawn, bottom_positions[min(pos2, 5)], player2_pawn)
         st.image(frame, caption=f"Round {round + 1}", use_container_width=True)
 
-        st.session_state.results.append((p1_move, p2_move, st.session_state.p1_pos, st.session_state.p2_pos))
+        if st.button("Next Number"):
+            p1_move = st.session_state.p1_numbers[round]
+            p2_move = st.session_state.p2_numbers[round]
+            st.session_state.p1_pos += p1_move
+            st.session_state.p2_pos += p2_move
+            st.session_state.results.append((p1_move, p2_move, st.session_state.p1_pos, st.session_state.p2_pos))
 
-        if st.session_state.p1_pos + st.session_state.p2_pos >= 6:
-            st.session_state.encounter = True
-            st.session_state.step = 3
-        elif round < 2:
-            if st.button("Next Round"):
+            if st.session_state.p1_pos + st.session_state.p2_pos >= 6:
+                st.session_state.encounter = True
+                st.session_state.step = 3
+            else:
                 st.session_state.round += 1
-                st.rerun()
-        else:
-            st.session_state.step = 3
             st.rerun()
+
+    else:
+        st.session_state.step = 3
+        st.rerun()
 
 elif st.session_state.step == 3:
     st.subheader("Final Result")
