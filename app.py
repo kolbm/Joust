@@ -45,12 +45,12 @@ player2_pawn_file = [k for k in player2_options if PAWN_LABELS[k] == player2_dis
 
 # Load and resize images with transparency
 background = Image.open(BACKGROUND_PATH).convert("RGBA")
-player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((64, 64))
-player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((64, 64))
+player1_pawn = Image.open(player1_pawn_file).convert("RGBA").resize((80, 80))
+player2_pawn = Image.open(player2_pawn_file).convert("RGBA").resize((80, 80))
 
-# Hex positions adjusted to better center pawns on hexes
-bottom_positions = [(10, 355), (100, 277), (180, 195), (265, 115), (350, 35), (435, -45)]
-top_positions = [(435, 355), (350, 277), (265, 195), (180, 115), (100, 35), (10, -45)]
+# Updated positions from annotated map
+bottom_positions = [(645, 530), (530, 445), (430, 365), (325, 282), (220, 200), (115, 120)]
+top_positions = [(115, 45), (220, 120), (325, 200), (430, 282), (530, 365), (645, 445)]
 
 if "step" not in st.session_state:
     st.session_state.step = 0
@@ -105,7 +105,6 @@ elif st.session_state.step == 2:
             else:
                 st.session_state.round += 1
             st.rerun()
-
     else:
         st.session_state.step = 3
         st.rerun()
